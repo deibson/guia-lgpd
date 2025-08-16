@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo LGPD para Engenharia de Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            padding-top: 80px; 
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        .main-nav-link {
+            @apply px-4 py-2 text-sm font-medium text-slate-600 rounded-lg transition-colors duration-300;
+        }
+        .main-nav-link:hover {
+            @apply bg-teal-50 text-teal-700;
+        }
+        .main-nav-link.active {
+            @apply bg-teal-600 text-white shadow-md;
+        }        
+        .main-nav-link::after {
+            content: none;
+        }
+        .table-cell {
+            transition: all 0.5s ease-in-out;
+        }
+        .table-cell.highlight-change {
+            background-color: #fef9c3;
+            transform: scale(1.05);
+        }
+        .nav-button.active {
+            background-color: #0d9488;
+            color: white;
+        }
+        .code-tab-btn.active-code-tab {
+            border-bottom: 2px solid #0d9488; 
+            color: #0f766e;
+        }
+        .code-block pre {
+            @apply bg-slate-100 text-slate-800 p-4 rounded-lg text-sm;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }      
+        @media screen and (max-width: 768px) {
+            .responsive-table thead {
+                @apply hidden;
+            }
+            .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td {
+                @apply block;
+            }
+            .responsive-table tr {
+                @apply border-b-4 border-slate-200 mb-4;
+            }
+            .responsive-table td {
+                @apply text-right relative p-3;
+                padding-left: 50%;
+            }
+            .responsive-table td::before {
+                content: attr(data-header);
+                @apply absolute left-4 top-1/2 -translate-y-1/2 font-semibold text-slate-600 text-left whitespace-nowrap;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-sm shadow-sm fixed top-0 left-0 right-0 z-20 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                 <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-teal-700">LGPD para Engenharia de Dados</h1>
+                </div>
+                 <nav id="main-nav-desktop" class="hidden md:flex items-center space-x-2 bg-slate-100 p-2 rounded-lg">
+                    <a href="#foundations" class="main-nav-link">Fundamentos</a>
+                    <a href="#techniques" class="main-nav-link">Técnicas</a>
+                    <a href="#best-practices" class="main-nav-link">Boas Práticas</a>
+                    <a href="#medallion-architecture" class="main-nav-link">Arquitetura</a>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-slate-600 hover:text-teal-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-4 6h4"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white/95 backdrop-blur-sm border-t border-slate-200">
+            <nav class="flex flex-col items-center p-4 space-y-2">
+                <a href="#foundations" class="main-nav-link w-full text-center">Fundamentos</a>
+                <a href="#techniques" class="main-nav-link w-full text-center">Técnicas</a>
+                <a href="#best-practices" class="main-nav-link w-full text-center">Boas Práticas</a>
+                <a href="#medallion-architecture" class="main-nav-link w-full text-center">Arquitetura</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 md:py-12">
+        <section id="foundations" class="mb-16">
+            <h2 class="text-2xl font-bold mb-2">1. Fundamentos: Tipos de Dados</h2>
+            <p class="text-slate-600 mb-8 max-w-3xl">Na engenharia de dados, um dado pessoal é qualquer registro que, sozinho ou combinado, pode identificar uma pessoa. A LGPD os divide em duas categorias principais com níveis de risco diferentes.</p>
+            
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold mb-6 text-slate-900 border-b pb-2">Dados Pessoais Comuns</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h4 class="font-bold text-lg mb-4">👤 Dados Cadastrais</h4>
+                        <ul class="space-y-3 text-slate-700 text-sm">
+                            <li><strong>Nome:</strong> Maria Joaquina de Amaral Pereira, "Maju"</li>
+                            <li><strong>Endereço:</strong> Rua das Flores, 123, Apto 45, São Paulo-SP</li>
+                            <li><strong>Telefone:</strong> +55 (11) 99876-5432</li>
+                            <li><strong>E-mail:</strong> maria.j.pereira@email.com</li>
+                            <li><strong>Data de Nascimento:</strong> 15/05/1990</li>
+                            <li><strong>Fotografia:</strong> Foto de perfil em redes sociais ou crachá</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h4 class="font-bold text-lg mb-4">💳 Documentos de Identificação</h4>
+                        <ul class="space-y-3 text-slate-700 text-sm">
+                            <li><strong>CPF:</strong> 123.456.789-00</li>
+                            <li><strong>RG:</strong> 12.345.678-9 SSP/SP</li>
+                            <li><strong>CNH:</strong> 01234567890</li>
+                            <li><strong>Passaporte:</strong> GY123456</li>
+                            <li><strong>Título de Eleitor:</strong> 1234 5678 9012</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h4 class="font-bold text-lg mb-4">🌐 Dados Digitais e de Navegação</h4>
+                        <ul class="space-y-3 text-slate-700 text-sm">
+                            <li><strong>Endereço IP:</strong> 200.201.202.203 (identifica sua conexão)</li>
+                            <li><strong>Cookies:</strong> `SESSID=abc123xyz` (rastreia atividade em sites)</li>
+                            <li><strong>Geolocalização (GPS):</strong> Lat: -23.5505, Lon: -46.6333</li>
+                            <li><strong>ID de Dispositivo:</strong> IDFA/AAID (usado para publicidade)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h4 class="font-bold text-lg mb-4">💰 Dados Financeiros</h4>
+                        <ul class="space-y-3 text-slate-700 text-sm">
+                            <li><strong>Cartão de Crédito:</strong> 4988 1234 **** 9012</li>
+                            <li><strong>Dados Bancários:</strong> Banco X, Ag 0001, C/C 12345-6</li>
+                            <li><strong>Histórico de Pagamentos:</strong> Compra de R$150 na Loja Y</li>
+                            <li><strong>Renda:</strong> Salário declarado em um cadastro de R$ 5.000,00</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold mb-6 text-slate-900 border-b pb-2">🔒 Dados Pessoais Sensíveis</h3>
+                 <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg shadow">
+                    <p class="mb-4 text-red-800">Informações que podem gerar discriminação e exigem proteção máxima, como criptografia forte e controle de acesso restrito.</p>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-red-900 text-sm">
+                        <li><strong>Origem racial ou étnica:</strong> Autodeclaração "parda" ou "indígena".</li>
+                        <li><strong>Convicção religiosa:</strong> "Espírita", "Candomblecista".</li>
+                        <li><strong>Opinião política:</strong> Filiação a partido, assinatura em petição.</li>
+                        <li><strong>Filiação a sindicato:</strong> Membro do "Sindicato dos Metalúrgicos".</li>
+                        <li><strong>Dados de saúde:</strong> Diagnóstico de "diabetes", uso de medicamentos.</li>
+                        <li><strong>Vida sexual:</strong> Orientação sexual, identidade de gênero.</li>
+                        <li><strong>Dados genéticos:</strong> Resultado de teste de DNA.</li>
+                        <li><strong>Dados biométricos:</strong> Impressão digital, reconhecimento facial.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="techniques" class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl font-bold mb-2">2. A Solução e as Técnicas de Anonimização</h2>
+                <p class="text-slate-600 mb-6 max-w-3xl mx-auto">A anonimização é o processo técnico que remove a ligação entre o dado e o indivíduo. Explore as técnicas mais comuns, veja a transformação acontecer e aprenda a implementá-las.</p>
+                <div class="bg-teal-50 border-l-4 border-teal-500 text-teal-800 p-6 rounded-lg shadow max-w-2xl mx-auto text-left">
+                    <p class="font-semibold text-lg">"Um dado anonimizado não é mais um dado pessoal."</p>
+                    <p class="mt-1">Uma vez que o processo é aplicado corretamente, o dado sai do escopo da LGPD, simplificando seu uso e armazenamento.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow">
+                <nav id="technique-nav" class="flex flex-wrap gap-2 mb-6 border-b pb-4">
+                    <button data-technique="masking" class="nav-button active px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition">Mascaramento</button>
+                    <button data-technique="generalization" class="nav-button px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition">Generalização</button>
+                    <button data-technique="randomization" class="nav-button px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition">Randomização</button>
+                    <button data-technique="pseudonymization" class="nav-button px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition">Pseudonimização</button>
+                    <button data-technique="suppression" class="nav-button px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition">Supressão</button>
+                    <button data-technique="kAnonymity" class="nav-button px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition">K-Anonimato</button>
+                </nav>
+
+                <div id="technique-content">
+                    <h3 id="technique-title" class="text-xl font-semibold mb-2 text-slate-900"></h3>
+                    <p id="technique-description" class="text-slate-600 mb-6"></p>
+
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <h4 class="text-lg font-semibold text-slate-700">Exemplo de Dados</h4>
+                        <div class="flex gap-2">
+                           <button id="anonymize-btn" class="px-5 py-2 bg-teal-600 text-white font-semibold rounded-md hover:bg-teal-700 transition shadow">Anonimizar Dados</button>
+                           <button id="reset-btn" class="px-5 py-2 bg-slate-200 text-slate-800 font-semibold rounded-md hover:bg-slate-300 transition">Resetar</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto mb-8">
+                        <table id="data-table" class="w-full text-left border-collapse">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-6 border-t pt-6">
+                        <button id="toggle-code-btn" class="w-full text-left flex justify-between items-center px-5 py-3 bg-slate-100 text-slate-800 font-semibold rounded-md hover:bg-slate-200 transition">
+                            <span>Exemplos de Código</span>
+                            <span id="toggle-icon">▼</span>
+                        </button>
+                    </div>
+
+                    <div id="code-section" class="mt-4 hidden">
+                        <div class="flex border-b border-slate-200">
+                            <button class="code-tab-btn active-code-tab py-2 px-4 text-sm font-semibold" data-lang="python">Python (Pandas)</button>
+                            <button class="code-tab-btn py-2 px-4 text-sm font-semibold text-slate-500" data-lang="pyspark">PySpark</button>
+                            <button class="code-tab-btn py-2 px-4 text-sm font-semibold text-slate-500" data-lang="sql">SQL</button>
+                        </div>
+                        <div id="code-examples" class="mt-4">
+                            <div id="python-code-block" class="code-block"><pre><code class="language-python"></code></pre></div>
+                            <div id="pyspark-code-block" class="code-block hidden"><pre><code class="language-python"></code></pre></div>
+                            <div id="sql-code-block" class="code-block hidden"><pre><code class="language-sql"></code></pre></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="best-practices" class="mb-16">
+            <h2 class="text-2xl font-bold mb-2">3. Boas Práticas para Engenharia</h2>
+            <p class="text-slate-600 mb-8 max-w-3xl">A conformidade com a LGPD não é apenas uma questão jurídica; é um pilar da engenharia de dados moderna e responsável. Siga estas diretrizes:</p>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow">
+                <ol class="list-decimal list-inside space-y-4 text-slate-700">
+                    <li><strong class="font-semibold text-slate-900">Mapeie seus Dados:</strong> Identifique quais colunas e campos contêm dados pessoais e sensíveis em seus Data Lakes e Data Warehouses.</li>
+                    <li><strong class="font-semibold text-slate-900">Anonimize na Fonte:</strong> Sempre que possível, aplique as técnicas de anonimização durante o processo de ETL/ELT, antes de carregar os dados em ambientes de análise.</li>
+                    <li><strong class="font-semibold text-slate-900">Use Ambientes Separados:</strong> Crie ambientes de desenvolvimento e testes que utilizem exclusivamente dados anonimizados para evitar riscos.</li>
+                    <li><strong class="font-semibold text-slate-900">Cuidado com a Re-identificação:</strong> Esteja ciente de que cruzar múltiplos datasets, mesmo que anonimizados, pode, em alguns casos, reverter a anonimização. Avalie os riscos.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="medallion-architecture" class="mb-16">
+            <h2 class="text-2xl font-bold mb-2">4. Aplicação: Anonimização na Arquitetura Medalhão</h2>
+            <p class="text-slate-600 mb-8 max-w-3xl">A Arquitetura Medalhão (Bronze, Silver, Gold) organiza o pipeline de dados em camadas de qualidade. A anonimização deve ser aplicada de forma estratégica. Veja a transformação na prática.</p>
+            
+             <div class="space-y-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-3 text-slate-800">Dados de Origem (Raw)</h3>
+                    <p class="text-sm text-slate-600 mb-4">Dados como chegam da fonte, contendo todas as informações pessoais identificáveis (PII).</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse responsive-table">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="p-3 text-sm font-semibold tracking-wide">id</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">nome</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">cpf</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">email</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">idade</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">cidade</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">valor_compra</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-3 border-b border-slate-200" data-header="id">1</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="nome">João Silva</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cpf">111.222.333-44</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="email">joao.silva@email.com</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="idade">28</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cidade">São Paulo</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="valor_compra">150.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 border-b border-slate-200" data-header="id">2</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="nome">Maria Oliveira</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cpf">555.666.777-88</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="email">maria.o@email.com</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="idade">35</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cidade">Rio de Janeiro</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="valor_compra">220.50</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex justify-center"><span class="text-4xl text-slate-400">↓</span></div>
+
+                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-600">
+                    <h3 class="text-xl font-semibold mb-3 text-yellow-700">🥉 Transformação para Bronze</h3>
+                    <p class="text-sm text-slate-600 mb-4"><strong>Foco em Privacidade:</strong> Acesso restrito. A principal técnica é a **Pseudonimização** para substituir o CPF por uma chave hash.</p>
+                    <div class="code-block mb-4">
+                        <pre><code class="language-python"># PySpark: Pseudonimização na Bronze
+from pyspark.sql.functions import sha2, col
+df_bronze = df_raw.withColumn("id_usuario_pseudo", sha2(col("cpf"), 256))</code></pre>
+                    </div>
+                    <h4 class="font-bold mt-4 mb-2">Resultado na Bronze:</h4>
+                    <div class="overflow-x-auto">
+                         <table class="w-full text-left border-collapse responsive-table">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="p-3 text-sm font-semibold tracking-wide">id_usuario_pseudo</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">id</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">nome</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">cpf</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">email</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">idade</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">cidade</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">valor_compra</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-3 border-b border-slate-200" data-header="id_usuario_pseudo">a1b2...</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="id">1</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="nome">João Silva</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cpf">111...</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="email">joao@email.com</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="idade">28</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cidade">São Paulo</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="valor_compra">150.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 border-b border-slate-200" data-header="id_usuario_pseudo">c3d4...</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="id">2</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="nome">Maria Oliveira</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cpf">555...</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="email">maria.o@email.com</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="idade">35</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cidade">Rio de Janeiro</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="valor_compra">220.50</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center"><span class="text-4xl text-slate-400">↓</span></div>
+
+                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-slate-400">
+                    <h3 class="text-xl font-semibold mb-3 text-slate-600">🥈 Transformação para Silver</h3>
+                    <p class="text-sm text-slate-600 mb-4"><strong>Foco em Privacidade:</strong> Camada ideal para anonimização robusta. Aplicamos **Supressão**, **Mascaramento** e **Generalização**.</p>
+                     <div class="code-block mb-4">
+                        <pre><code class="language-python"># PySpark: Anonimização na Silver
+from pyspark.sql.functions import regexp_replace, when
+df_silver = df_bronze.withColumn(...)
+  .drop("nome", "cpf", "email", "idade")</code></pre>
+                    </div>
+                    <h4 class="font-bold mt-4 mb-2">Resultado na Silver:</h4>
+                    <div class="overflow-x-auto">
+                         <table class="w-full text-left border-collapse responsive-table">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="p-3 text-sm font-semibold tracking-wide">id_usuario_pseudo</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">id</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">cidade</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">valor_compra</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">email_mascarado</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">faixa_etaria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-3 border-b border-slate-200" data-header="id_usuario_pseudo">a1b2...</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="id">1</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cidade">São Paulo</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="valor_compra">150.00</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="email_mascarado">***@email.com</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="faixa_etaria">Abaixo de 30</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 border-b border-slate-200" data-header="id_usuario_pseudo">c3d4...</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="id">2</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cidade">Rio de Janeiro</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="valor_compra">220.50</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="email_mascarado">***@email.com</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="faixa_etaria">30 ou mais</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex justify-center"><span class="text-4xl text-slate-400">↓</span></div>
+
+                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-amber-400">
+                    <h3 class="text-xl font-semibold mb-3 text-amber-600">🥇 Transformação para Gold</h3>
+                    <p class="text-sm text-slate-600 mb-4"><strong>Foco em Privacidade:</strong> Dados totalmente anonimizados e agregados para BI, removendo a granularidade individual.</p>
+                     <div class="code-block mb-4">
+                        <pre><code class="language-python"># PySpark: Agregação na Gold
+from pyspark.sql.functions import sum, count
+df_gold = df_silver.groupBy("faixa_etaria", "cidade")
+  .agg(...)</code></pre>
+                    </div>
+                     <h4 class="font-bold mt-4 mb-2">Resultado na Gold:</h4>
+                    <div class="overflow-x-auto">
+                         <table class="w-full text-left border-collapse responsive-table">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="p-3 text-sm font-semibold tracking-wide">faixa_etaria</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">cidade</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">total_vendas</th>
+                                    <th class="p-3 text-sm font-semibold tracking-wide">total_clientes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-3 border-b border-slate-200" data-header="faixa_etaria">Abaixo de 30</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cidade">São Paulo</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="total_vendas">150.00</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="total_clientes">1</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 border-b border-slate-200" data-header="faixa_etaria">30 ou mais</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="cidade">Rio de Janeiro</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="total_vendas">220.50</td>
+                                    <td class="p-3 border-b border-slate-200" data-header="total_clientes">1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-4 text-center text-sm">
+            <p>&copy; 2025 Guia Interativo LGPD. Conteúdo adaptado para fins educacionais.</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <script>
+        const techniques = {
+            masking: {
+                title: 'Técnica 1: Mascaramento (Masking)',
+                description: 'Ideal para dados de identificação direta. Oculta-se parte do dado, preservando seu formato, mas removendo a capacidade de identificação.',
+                headers: ['nome', 'cpf', 'cartao_credito'],
+                originalData: [{ nome: 'Maria Souza', cpf: '123.456.789-00', cartao_credito: '4988 1234 5678 9012' }],
+                anonymizedData: [{ nome: 'Maria S.', cpf: '***.***.789-**', cartao_credito: '4988 **** **** 9012' }],
+                pythonCode: `import pandas as pd\n# Exemplo com Pandas DataFrame\ndf['cpf_mascarado'] = df['cpf'].str.slice_replace(0, 9, '***.***')\ndf['nome_mascarado'] = df['nome'].apply(lambda x: x.split(' ')[0] + ' S.')`,
+                pysparkCode: `from pyspark.sql.functions import regexp_replace, split, concat, lit\n# Exemplo com PySpark DataFrame\ndf = df.withColumn('cpf_mascarado', regexp_replace('cpf', r'\\d{3}\\.\\d{3}', '***.***'))\ndf = df.withColumn('nome_mascarado', concat(split('nome', ' ')[0], lit(' S.')))`,
+                sqlCode: `UPDATE usuarios\nSET \n  cpf = CONCAT('***.***.', SUBSTRING(cpf, 9, 6)),\n  nome = CONCAT(SUBSTRING_INDEX(nome, ' ', 1), ' S.')\nWHERE id = 123;`
+            },
+            generalization: {
+                title: 'Técnica 2: Generalização',
+                description: 'Ideal para dados demográficos e de localização. Substitui-se um valor específico por uma categoria mais ampla (ex: idade por faixa etária).',
+                headers: ['idade', 'cidade', 'data_cadastro'],
+                originalData: [{ idade: '28', cidade: 'São Paulo', data_cadastro: '2023-10-26 10:15:00' }],
+                anonymizedData: [{ idade: '25-30 anos', cidade: 'Sudeste', data_cadastro: 'Outubro/2023' }],
+                pythonCode: `def generalizar_idade(idade):\n    if 20 <= idade <= 30:\n        return '20-30 anos'\n    elif 31 <= idade <= 40:\n        return '31-40 anos'\n    return 'Outra faixa'\n\ndf['faixa_etaria'] = df['idade'].apply(generalizar_idade)`,
+                pysparkCode: `from pyspark.sql.functions import when, col\n# Exemplo com PySpark DataFrame\ndf = df.withColumn('faixa_etaria', \n    when(col('idade').between(20, 30), '20-30 anos')\n    .when(col('idade').between(31, 40), '31-40 anos')\n    .otherwise('Outra faixa')\n)`,
+                sqlCode: `UPDATE usuarios\nSET faixa_etaria = CASE\n    WHEN idade BETWEEN 20 AND 30 THEN '20-30 anos'\n    WHEN idade BETWEEN 31 AND 40 THEN '31-40 anos'\n    ELSE 'Outra faixa'\nEND;`
+            },
+            randomization: {
+                title: 'Técnica 3: Randomização (ou Perturbação)',
+                description: 'Ideal para dados numéricos sensíveis. Adiciona-se um "ruído" estatisticamente insignificante ao dado, alterando o valor individual mas preservando a distribuição geral para análise.',
+                headers: ['id_paciente', 'renda_mensal', 'pressao_arterial'],
+                originalData: [{ id_paciente: '789', renda_mensal: 'R$ 5.400,00', pressao_arterial: '12/8' }],
+                anonymizedData: [{ id_paciente: '789', renda_mensal: 'R$ 5.150,00', pressao_arterial: '13/8' }],
+                pythonCode: `import random\n# Adiciona ou subtrai até 5% do valor original\ndf['renda_randomizada'] = df['renda_mensal'].apply(\n    lambda x: x * (1 + random.uniform(-0.05, 0.05))\n)`,
+                pysparkCode: `from pyspark.sql.functions import rand, col\n# Adiciona ou subtrai até 10% do valor original\ndf = df.withColumn('renda_randomizada', \n    col('renda_mensal') * (1 + (rand() - 0.5) / 5)\n)`,
+                sqlCode: `UPDATE financas\nSET renda_mensal = renda_mensal * (1 + (RAND() - 0.5) / 10);\n-- O cálculo de ruído pode variar conforme o dialeto SQL`
+            },
+            pseudonymization: {
+                title: 'Técnica 4: Pseudonimização',
+                description: 'Substitui um identificador por um "pseudônimo" (um token, hash ou chave). Atenção: Não é uma anonimização completa, pois o processo pode ser revertido se a tabela de mapeamento for acessada. O dado pseudonimizado ainda é considerado um dado pessoal.',
+                headers: ['id_usuario', 'email', 'ultima_compra'],
+                originalData: [{ id_usuario: '101', email: 'joao.silva@email.com', ultima_compra: 'Produto A' }],
+                anonymizedData: [{ id_usuario: 'a1b2-c3d4-e5f6-g7h8', email: 'a1b2-c3d4-e5f6-g7h8', ultima_compra: 'Produto A' }],
+                pythonCode: `import hashlib\ndef pseudonimizar(valor):\n    return hashlib.sha256(valor.encode()).hexdigest()\n\ndf['user_pseudonimo'] = df['id_usuario'].apply(pseudonimizar)`,
+                pysparkCode: `from pyspark.sql.functions import sha2, col\n# Gera um hash SHA-256 do id do usuário\ndf = df.withColumn('user_pseudonimo', sha2(col('id_usuario'), 256))`,
+                sqlCode: `UPDATE usuarios\nSET id_usuario_pseudonimo = SHA2(id_usuario, 256);\n-- A função de hash pode variar (MD5, SHA1, etc.)`
+            },
+            suppression: {
+                title: 'Técnica 5: Supressão',
+                description: 'Remove completamente a informação do conjunto de dados. Pode ser a exclusão de uma coluna inteira (ex: nome) ou de registros específicos que são muito fáceis de identificar.',
+                headers: ['nome', 'cidade', 'idade'],
+                originalData: [{ nome: 'Pedro Álvares', cidade: 'Rio de Janeiro', idade: '45' }],
+                anonymizedData: [{ nome: '[REMOVIDO]', cidade: 'Rio de Janeiro', idade: '45' }],
+                pythonCode: `# Remove a coluna inteira\ndf_suprimido = df.drop(columns=['nome'])\n\n# Ou remove valores específicos\ndf['nome'] = '[REMOVIDO]'`,
+                pysparkCode: `# Remove a coluna inteira\ndf_suprimido = df.drop('nome')\n\n# Ou substitui valores específicos\nfrom pyspark.sql.functions import lit\ndf = df.withColumn('nome', lit('[REMOVIDO]'))`,
+                sqlCode: `ALTER TABLE usuarios\nDROP COLUMN nome;\n\n-- Ou para valores específicos\nUPDATE usuarios\nSET nome = '[REMOVIDO]'\nWHERE condicao_especifica;`
+            },
+            kAnonymity: {
+                title: 'Técnica 6: K-Anonimato (Generalização Avançada)',
+                description: 'Garante que cada registro em um conjunto de dados seja indistinguível de pelo menos "k-1" outros registros. No exemplo (k=2), generalizamos CEP e idade para que não seja possível identificar um indivíduo isoladamente.',
+                headers: ['cep', 'idade', 'diagnostico'],
+                originalData: [
+                    { cep: '22041-011', idade: '28', diagnostico: 'Hipertensão' },
+                    { cep: '22041-012', idade: '29', diagnostico: 'Asma' },
+                    { cep: '90035-072', idade: '52', diagnostico: 'Diabetes' }
+                ],
+                anonymizedData: [
+                    { cep: '22041-***', idade: '20-30', diagnostico: 'Hipertensão' },
+                    { cep: '22041-***', idade: '20-30', diagnostico: 'Asma' },
+                    { cep: '90035-***', idade: '50-60', diagnostico: 'Diabetes' }
+                ],
+                pythonCode: `# K-Anonimato é um algoritmo complexo, não uma simples função.\n# O código abaixo é uma ilustração conceitual da generalização.\ndf['cep_generalizado'] = df['cep'].str.slice_replace(5, None, '-***')\ndf['faixa_etaria'] = pd.cut(df['idade'], bins=[20, 30, 40, 50, 60], \n                           labels=['20-30', '31-40', '41-50', '51-60'])`,
+                pysparkCode: `from pyspark.sql.functions import substring, concat, lit, when, col\n# Ilustração da generalização para K-Anonimato\ndf = df.withColumn('cep_generalizado', concat(substring(col('cep'), 1, 5), lit('-***')))\ndf = df.withColumn('faixa_etaria', \n    when(col('idade').between(20, 30), '20-30')\n    .when(col('idade').between(50, 60), '50-60')\n    .otherwise('Outra')\n)`,
+                sqlCode: `-- K-Anonimato requer análise prévia. A query reflete o resultado.\nUPDATE pacientes\nSET \n  cep_generalizado = CONCAT(SUBSTRING(cep, 1, 5), '-***'),\n  faixa_etaria = CASE\n    WHEN idade BETWEEN 20 AND 30 THEN '20-30'\n    WHEN idade BETWEEN 50 AND 60 THEN '50-60'\n    ELSE 'Outra'\n  END;`
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentTechnique = 'masking';
+            const techniqueNav = document.getElementById('technique-nav');
+            const titleEl = document.getElementById('technique-title');
+            const descriptionEl = document.getElementById('technique-description');
+            const tableHead = document.querySelector('#data-table thead');
+            const tableBody = document.querySelector('#data-table tbody');
+            const anonymizeBtn = document.getElementById('anonymize-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const pythonCodeEl = document.querySelector('#python-code-block code');
+            const pysparkCodeEl = document.querySelector('#pyspark-code-block code');
+            const sqlCodeEl = document.querySelector('#sql-code-block code');
+            const codeTabsContainer = document.querySelector('#code-section .flex');
+            const toggleCodeBtn = document.getElementById('toggle-code-btn');
+            const toggleIcon = document.getElementById('toggle-icon');
+            const codeSection = document.getElementById('code-section');
+
+            function renderTable(techniqueKey, dataType = 'originalData') {
+                const technique = techniques[techniqueKey];
+                const data = technique[dataType];
+
+                tableHead.innerHTML = `
+                    <tr class="bg-slate-100">
+                        ${technique.headers.map(h => `<th class="p-3 text-sm font-semibold tracking-wide text-left">${h}</th>`).join('')}
+                    </tr>
+                `;
+
+                tableBody.innerHTML = data.map(row => `
+                    <tr>
+                        ${technique.headers.map(h => `<td class="p-3 border-b border-slate-200 table-cell" data-header="${h}">${row[h]}</td>`).join('')}
+                    </tr>
+                `).join('');
+            }
+
+            function updateContent(techniqueKey) {
+                currentTechnique = techniqueKey;
+                const technique = techniques[techniqueKey];
+                titleEl.textContent = technique.title;
+                descriptionEl.textContent = technique.description;
+                document.querySelectorAll('.nav-button').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.technique === techniqueKey);
+                });
+                pythonCodeEl.textContent = technique.pythonCode;
+                pysparkCodeEl.textContent = technique.pysparkCode;
+                sqlCodeEl.textContent = technique.sqlCode;
+                Prism.highlightAll();
+                renderTable(techniqueKey);
+            }
+
+            techniqueNav.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    updateContent(e.target.dataset.technique);
+                }
+            });
+            
+            toggleCodeBtn.addEventListener('click', () => {
+                const isHidden = codeSection.classList.toggle('hidden');
+                toggleIcon.textContent = isHidden ? '▼' : '▲';
+            });
+
+            codeTabsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('code-tab-btn')) {
+                    const lang = e.target.dataset.lang;
+                    document.querySelectorAll('.code-tab-btn').forEach(btn => btn.classList.remove('active-code-tab'));
+                    e.target.classList.add('active-code-tab');
+                    document.getElementById('python-code-block').classList.toggle('hidden', lang !== 'python');
+                    document.getElementById('pyspark-code-block').classList.toggle('hidden', lang !== 'pyspark');
+                    document.getElementById('sql-code-block').classList.toggle('hidden', lang !== 'sql');
+                }
+            });
+
+            anonymizeBtn.addEventListener('click', () => {
+                const originalData = techniques[currentTechnique].originalData;
+                const anonymizedData = techniques[currentTechnique].anonymizedData;
+                renderTable(currentTechnique, 'anonymizedData');
+                setTimeout(() => {
+                    tableBody.querySelectorAll('tr').forEach((row, rowIndex) => {
+                        row.querySelectorAll('.table-cell').forEach(cell => {
+                            const header = cell.dataset.header;
+                            if (originalData[rowIndex]?.[header] !== anonymizedData[rowIndex]?.[header]) {
+                                cell.classList.add('highlight-change');
+                            }
+                        });
+                    });
+                }, 50);
+            });
+
+            resetBtn.addEventListener('click', () => renderTable(currentTechnique));
+            
+            const sections = document.querySelectorAll('section[id]');
+            const allNavLinks = document.querySelectorAll('.main-nav-link');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        allNavLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(section => observer.observe(section));
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            mobileMenu.addEventListener('click', (e) => {
+                if(e.target.tagName === 'A') {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+
+            updateContent('masking');
+        });
+    </script>
+</body>
+</html>
