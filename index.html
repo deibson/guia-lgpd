@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia Interativo LGPD para Engenharia de Dados</title>
-    <script src="https://cdn.tailwindcss.com"></script>    
+    <title>Guia LGPD para Engenharia de Dados | Técnicas de Anonimização</title>
+    <meta name="description" content="Aprenda na prática sobre a LGPD para engenharia de dados. Guia interativo com exemplos de técnicas de anonimização como mascaramento, supressão e mais.">
+    <meta name="keywords" content="LGPD, Engenharia de Dados, Anonimização, Dados Pessoais, Dados Sensíveis, Mascaramento, Pseudonimização, Lei Geral de Proteção de Dados">
+    <meta name="google-site-verification" content="FLeEPbvo1PhZCpuPGsBiKKB9TppsKYTH32eNadNy2Ek" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />    
     <style>
         body {
@@ -12,6 +15,7 @@
             padding-top: 80px; 
         }
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
         .main-nav-link {
             @apply px-4 py-2 text-sm font-medium text-slate-600 rounded-lg transition-colors duration-300;
         }
@@ -20,10 +24,11 @@
         }
         .main-nav-link.active {
             @apply bg-teal-600 text-white shadow-md;
-        }        
+        }
         .main-nav-link::after {
             content: none;
         }
+
         .table-cell {
             transition: all 0.5s ease-in-out;
         }
@@ -36,14 +41,15 @@
             color: white;
         }
         .code-tab-btn.active-code-tab {
-            border-bottom: 2px solid #0d9488; 
+            border-bottom: 2px solid #0d9488;
             color: #0f766e;
         }
         .code-block pre {
             @apply bg-slate-100 text-slate-800 p-4 rounded-lg text-sm;
             white-space: pre-wrap;
             word-wrap: break-word;
-        }      
+        }
+       
         @media screen and (max-width: 768px) {
             .responsive-table thead {
                 @apply hidden;
@@ -99,6 +105,7 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-6 py-8 md:py-12">
+        
         <section id="foundations" class="mb-16">
             <h2 class="text-2xl font-bold mb-2">1. Fundamentos: Tipos de Dados</h2>
             <p class="text-slate-600 mb-8 max-w-3xl">Na engenharia de dados, um dado pessoal é qualquer registro que, sozinho ou combinado, pode identificar uma pessoa. A LGPD os divide em duas categorias principais com níveis de risco diferentes.</p>
